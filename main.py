@@ -24,6 +24,7 @@ pygame.display.set_icon(icon)
 
 # Player
 playerImg = pygame.image.load('player.png')
+fireImg = pygame.image.load('fire.png')
 playerX = 370
 playerY = 480
 playerX_change = 0
@@ -34,12 +35,15 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
-num_of_enemies = 6
+num_of_enemies = 8
 
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load('enemy.png'))
-    enemyX.append(random.randint(0, 736))
-    enemyY.append(random.randint(50, 150))
+
+    #CHANGE: Spaced each enemy out rather than clumping all of them together
+    enemyX.append(i*100)
+    enemyY.append(0)
+
     enemyX_change.append(4)
     enemyY_change.append(40)
 
@@ -77,9 +81,8 @@ def game_over_text():
     screen.blit(over_text, (200, 250))
 
 
-def player(x, y):
-    screen.blit(playerImg, (x, y))
-
+def player(img, x, y):
+    screen.blit(img, (x, y))
 
 def enemy(x, y, i):
     screen.blit(enemyImg[i], (x, y))
@@ -119,11 +122,13 @@ while running:
                 playerX_change = 5
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
+                    player(fireImg, playerX, playerY)
                     bulletSound = mixer.Sound("laser.wav")
                     bulletSound.play()
                     # Get the current x cordinate of the spaceship
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
+                    
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -178,6 +183,6 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
-    player(playerX, playerY)
+    player(playerImg, playerX, playerY)
     show_score(textX, testY)
     pygame.display.update()
