@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((800, 600))
 
 # Background
 background = pygame.image.load('background.png')
+dangerBackground = pygame.image.load('danger.png')
 
 # Sound
 mixer.music.load("background.wav")
@@ -24,7 +25,7 @@ pygame.display.set_icon(icon)
 
 # Player
 playerImg = pygame.image.load('player.png')
-fireImg = pygame.image.load('fire.png')
+#fireImg = pygame.image.load('fire.png')
 playerX = 370
 playerY = 480
 playerX_change = 0
@@ -35,7 +36,7 @@ enemyX = []
 enemyY = []
 enemyX_change = []
 enemyY_change = []
-num_of_enemies = 8
+num_of_enemies = 6
 
 for i in range(num_of_enemies):
     enemyImg.append(pygame.image.load('enemy.png'))
@@ -101,6 +102,8 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
     else:
         return False
 
+def dangerBG():
+    screen.blit(dangerBackground, (0, 0))
 
 # Game Loop
 running = True
@@ -116,13 +119,13 @@ while running:
 
         # if keystroke is pressed check whether its right or left
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_a:
                 playerX_change = -5
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_d:
                 playerX_change = 5
             if event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
-                    player(fireImg, playerX, playerY)
+                    #player(fireImg, playerX, playerY)
                     bulletSound = mixer.Sound("laser.wav")
                     bulletSound.play()
                     # Get the current x cordinate of the spaceship
@@ -131,7 +134,7 @@ while running:
                     
 
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_a or event.key == pygame.K_d:
                 playerX_change = 0
 
     # 5 = 5 + -0.1 -> 5 = 5 - 0.1
@@ -146,8 +149,11 @@ while running:
     # Enemy Movement
     for i in range(num_of_enemies):
 
+        # Danger Background
+        if enemyY[i] > 300:
+            dangerBG()
         # Game Over
-        if enemyY[i] > 440:
+        elif enemyY[i] > 440:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
             game_over_text()
@@ -169,8 +175,11 @@ while running:
             bulletY = 480
             bullet_state = "ready"
             score_value += 1
-            enemyX[i] = random.randint(0, 736)
-            enemyY[i] = random.randint(50, 150)
+            #Makes enemies spawn spread apart each time killed
+            enemyX[i] = ((i + 1) *100)
+            enemyY[i] = (0)
+            #enemyX[i] = random.randint(0, 736)
+            #enemyY[i] = random.randint(50, 150)
 
         enemy(enemyX[i], enemyY[i], i)
 
