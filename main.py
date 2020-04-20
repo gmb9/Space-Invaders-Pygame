@@ -147,11 +147,13 @@ while running:
         playerX = 736
 
     # Enemy Movement
+    is_in_danger = False
     for i in range(num_of_enemies):
 
         # Danger Background
         if enemyY[i] > 300:
-            dangerBG()
+            is_in_danger = True
+
         # Game Over
         elif enemyY[i] > 440:
             for j in range(num_of_enemies):
@@ -182,6 +184,9 @@ while running:
             #enemyY[i] = random.randint(50, 150)
 
         enemy(enemyX[i], enemyY[i], i)
+
+    if is_in_danger == True:
+        dangerBG()
 
     # Bullet Movement
     if bulletY <= 0:
