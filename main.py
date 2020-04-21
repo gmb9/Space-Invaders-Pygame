@@ -4,6 +4,7 @@ import random
 import pygame
 from pygame import mixer
 
+
 # Intialize the pygame
 pygame.init()
 
@@ -45,7 +46,7 @@ for i in range(num_of_enemies):
     enemyX.append(i*100)
     enemyY.append(0)
 
-    enemyX_change.append(4)
+    enemyX_change.append(-.48)
     enemyY_change.append(40)
 
 # Bullet
@@ -64,18 +65,26 @@ bullet_state = "ready"
 
 score_value = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
+fontSmall = pygame.font.Font('freesansbold.ttf', 10)
 
 textX = 10
 testY = 10
+
+speedLocX = 10
+speedLocY = 40
 
 # Game Over
 over_font = pygame.font.Font('freesansbold.ttf', 64)
 
 
 def show_score(x, y):
-    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
+    score = font.render("Score: " + str(score_value), True, (255, 255, 255))
     screen.blit(score, (x, y))
 
+def show_speed(x, y):
+
+    speed = font.render("Speed: " + str(enemyX_change[1]), True, (255, 255, 255))
+    screen.blit(speed, (x, y))
 
 def game_over_text():
     over_text = over_font.render("GAME OVER", True, (255, 255, 255))
@@ -113,6 +122,7 @@ while running:
     screen.fill((0, 0, 0))
     # Background Image
     screen.blit(background, (0, 0))
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -131,7 +141,6 @@ while running:
                     # Get the current x cordinate of the spaceship
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
-                    
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a or event.key == pygame.K_d:
@@ -155,7 +164,7 @@ while running:
             is_in_danger = True
 
         # Game Over
-        elif enemyY[i] > 440:
+        if enemyY[i] > 440:
             for j in range(num_of_enemies):
                 enemyY[j] = 2000
             game_over_text()
@@ -163,10 +172,11 @@ while running:
 
         enemyX[i] += enemyX_change[i]
         if enemyX[i] <= 0:
-            enemyX_change[i] = 4
+            enemyX_change[i] = ((score_value + 4) * (.12))
             enemyY[i] += enemyY_change[i]
+
         elif enemyX[i] >= 736:
-            enemyX_change[i] = -4
+            enemyX_change[i] = -((score_value + 4) * (.12))
             enemyY[i] += enemyY_change[i]
 
         # Collision
@@ -199,4 +209,5 @@ while running:
 
     player(playerImg, playerX, playerY)
     show_score(textX, testY)
+    show_speed(speedLocX, speedLocY)
     pygame.display.update()
